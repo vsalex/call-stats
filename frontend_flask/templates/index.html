@@ -1,0 +1,37 @@
+{% extends '_base_template.html' %}
+
+{% block content %}
+<h1>Weekly stat info</h1>
+<em>from {{ week_start }} to {{ week_end }}</em>
+
+{% if code_error %}
+    <br><br>
+    <p style="color: red">{{ code_error }}</p>
+{% endif %}
+
+{% if phone_codes_stat %}
+    <br><br>
+
+    <p><strong>Code statistics for {{ phone_code }}</strong>:</p>
+    {% for phone_code_stat, value in phone_codes_stat.items() %}
+        <p>{{ phone_code_stat }} - {{ value }}</p>
+    {% endfor %}
+{% endif %}
+
+<br><br>
+{% for stat_type, stat_value in weekly_stat.items() %}
+    <p>{{ stat_type }} - {{ stat_value }}</p>
+{% endfor %}
+
+<br>
+<p>You can get phone code statistics by url's:</p>
+<p><a href="{{ url_for('index', phone_code='+7 (901)') }}">+7 (901)</a></p>
+<p><a href="{{ url_for('index', phone_code='+7 (916)') }}">+7 (916)</a></p>
+<p>... or any other phone code which present in test driven data</p>
+<p>
+    Also i think about automatization here - i can get all phone codes from db
+    and print    links here, but not sure about this step necessity in this
+    case.
+</p>
+
+{% endblock %}
