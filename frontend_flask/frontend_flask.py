@@ -49,6 +49,7 @@ def _get_code_statistics(code_from_url, weekly_db_stat, kwargs):
 
     return kwargs
 
+
 @app.route("/", methods=['GET'])
 def index():
     today = datetime.now().date()
@@ -58,7 +59,7 @@ def index():
     today = datetime.strptime('2015 12 31', '%Y %m %d')
 
     plus_7d = today + timedelta(days=7)
-    minus_7d = today +-timedelta(days=7)
+    minus_7d = today - timedelta(days=7)
 
     # Get weekly stat from DB
     weekly_db_stat = DailyStat.query.filter(

@@ -19,7 +19,12 @@ class DBManager(object):
         self.s = session()
 
     def _update_daily_stat(self, ds_db, ds_queue):
-        """Refresh all information in DB for current DailyStat"""
+        """
+        Refresh all information in DB for current DailyStat.
+
+        :param ds_db: <object> DailyStat from DB.
+        :param ds_queue: <object> DailyStat from CallDurationQueue.
+        """
 
         ds_db.summary_number_of_calls = ds_queue.summary_number_of_calls
         ds_db.summary_calls_duration = ds_queue.summary_calls_duration
@@ -29,7 +34,11 @@ class DBManager(object):
         self.s.add(ds_db)
 
     def _add_daily_stat(self, ds_queue):
-        """Add new DailyStat to DB"""
+        """
+        Add new DailyStat to DB.
+
+        :param ds_queue: <object> DailyStat from CallDurationQueue.
+        """
 
         new_db_ds = DailyStat(
             date=ds_queue.current_date,
@@ -44,7 +53,13 @@ class DBManager(object):
         return new_db_ds
 
     def _update_related_codes(self, ds_db, ds_queue_codes_stat):
-        """Refresh all related codes for current daily stat"""
+        """
+        Refresh all related codes for current daily stat.
+
+        :param ds_db: <object> DailyStat from DB.
+        :param ds_queue_codes_stat: <dict> of convenient code stats
+        representation for DB.
+        """
 
         # This case can be if on some day we got only one outdated duration
         # json input
@@ -75,6 +90,14 @@ class DBManager(object):
 
     @staticmethod
     def _get_all_code_statistic_for_day(daily_stat):
+        """
+        Get full statistics by concrete phone code by DailyStat from
+        CallDurationQueue. It just creates more convenient data structure for
+        DB,
+
+        :param daily_stat: <object> DailyStat from CallDurationQueue.
+        :return: <dict> of convenient code stats representation for DB.
+        """
 
         # This case can be if on some day we got only one outdated duration
         # json input
@@ -97,6 +120,13 @@ class DBManager(object):
         return daily_stat_codes
 
     def write_data_to_db(self, full_stat):
+        """
+        Write all data from FullStat object to DB.
+
+        :param full_stat: <object> FullStat with all DailyStat's from
+        CallDurationQueue,
+        """
+
         for daily_stat in full_stat.daily_stats:
 
             # Try to find this daily stat in DB
@@ -118,4 +148,3 @@ class DBManager(object):
                 self._update_related_codes(new_ds_db, daily_stat_codes)
 
             self.s.commit()
-            # today_stat = s.query(DailyStat).filter(DailyStat.date == datetime.now().date())

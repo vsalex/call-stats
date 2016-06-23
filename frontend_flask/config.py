@@ -12,4 +12,3 @@ SECRET_KEY = 'Secret key!'
 
 SQLALCHEMY_DATABASE_URI = 'sqlite:///../daily_stat.sqlite'
 SQLALCHEMY_TRACK_MODIFICATIONS = True
-

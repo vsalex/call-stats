@@ -4,21 +4,48 @@ from app.dailystat import DailyStat
 
 
 class FullStat(object):
+    """
+    Contain daily stats for every day. It can add new DailyStat or refresh some
+    statistics on existing.
+
+    In production i shall add here some methods that clear outdated daily stats
+    from here, but it depend on real case.
+    """
+
     def __init__(self):
         self.daily_stats = []
 
     def _get_daily_stat_for_call(self, call_obj):
+        """
+        Return DailyStat object the day when concrete call was made.
+
+        :param call_obj: <object> Call.
+        :return: <object> DailyStat.
+        """
+
         for elem in self.daily_stats:
             if elem.current_date == call_obj.timestamp.date():
                 return elem
 
     def _get_today_daily_stat(self):
+        """
+        Get today DailyStat object.
+
+        :return: <object> DailyStat.
+        """
         for elem in self.daily_stats:
             if elem.current_date == datetime.now().date():
                 return elem
 
     def _add_matched_to_daily_stats(self, matched):
+        """
+        Add new DailyStat to self.daily_stats or refresh existing DailyStat.
+
+        :param matched: <dict> with Call and Duration objects.
+        """
+
         cur_daily_stat = self._get_daily_stat_for_call(matched["call"])
+
         # If we didn't find daily stat with date same as in current call then
         # append new DailyStat object
         if not cur_daily_stat:
@@ -34,8 +61,7 @@ class FullStat(object):
         Make actions depend on whats coming in queue_result. If we got some
         unkown actions then NameError will be raised
 
-        :param queue_result:
-        :return:
+        :param queue_result: <dict> with CallDurationQueue.add_object() method.
         """
 
         # If there are no queue result coming, then do nothing
@@ -62,6 +88,8 @@ class FullStat(object):
         """
         Increase do_not_matched_calls counter for every outdated call
         from queue.
+
+        :param outdated_calls: <list> of outdated calls.
         """
 
         for outdated_call in outdated_calls:
@@ -77,6 +105,8 @@ class FullStat(object):
 
         Here can be some analysis by call_id to determinate approximately day
         but i'm not sure about necessity of this action.
+
+        :param outdated_durations: <list> of outdated durations.
         """
 
         for outdated_duration in outdated_durations:

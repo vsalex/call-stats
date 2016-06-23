@@ -4,21 +4,23 @@ from app.models import Call, Duration
 
 
 class CallDurationQueue(object):
+    """Queue of all calls and duration objects."""
+
     def __init__(self):
         self.calls = []
         self.duration = []
 
     def add_object(self, _obj):
         """
-        Add object to DailyStat. From here can be few options:
+        Add object to queue. From here can be few options:
         1. New Call or Duration object will be added to self.calls or
         self.duration list and will wait for opposite object with same call_id
         to refresh stats.
         2. If new Call or Duration object will find opposite object with same
-        call id it will refresh daily stats.
+        call id it will send further to refresh daily stats.
 
-        :param _obj: <object> Call or Duration
-        :return: True if object added and None otherwise
+        :param _obj: <object> Call or Duration.
+        :return: <dict> of what happened after adding new object.
         """
 
         result_of_adding = {}
@@ -44,7 +46,7 @@ class CallDurationQueue(object):
             matching_result = self._match(_obj, self.duration, self.calls)
         else:
             raise NameError("Error! Found some unexpected object %s in "
-                              "CallDurationQueue!" % _obj)
+                            "CallDurationQueue!" % _obj)
 
         if matching_result:
             result_of_adding.update(matching_result)
@@ -52,6 +54,17 @@ class CallDurationQueue(object):
         return result_of_adding
 
     def _match(self, _obj, _obj_list, another_list):
+        """
+        Matches two objects. If match were successful return matched objects
+        with their names in dict to refresh DB daily statistics. If not returns
+        False.
+
+        :param _obj: <object> Call or Duration.
+        :param _obj_list:  <list> self.calls or self.duration.
+        :param another_list: <list> self.calls or self.duration.
+        :return: <dict> of <False>.
+        """
+
         another_obj = self._get_elem_by_call_id(another_list, _obj.call_id)
         if another_obj:
             another_list.remove(another_obj)
@@ -59,7 +72,7 @@ class CallDurationQueue(object):
                 "matched": {
                     _obj.__class__.__name__.lower(): _obj,
                     another_obj.__class__.__name__.lower(): another_obj,
-            }}
+                }}
         else:
             _obj_list.append(_obj)
 
@@ -70,9 +83,9 @@ class CallDurationQueue(object):
         """
         Return Call or Duration object from _list by call_id.
 
-        :param _list: <list> of Call or Duration objects
-        :param call_id: <int>
-        :return: <object> from _list or None
+        :param _list: <list> of Call or Duration objects.
+        :param call_id: <int>.
+        :return: <object> from _list or None.
         """
 
         for elem in _list:
@@ -81,17 +94,16 @@ class CallDurationQueue(object):
 
         return None
 
-
     @staticmethod
     def _remove_outdated_from_list(_list, _hours=24):
         """
         Remove outdated Call or Duration object from self.calls or
         self.duration lists.
 
-        :param _list: <list> self.calls or self.duration
+        :param _list: <list> self.calls or self.duration.
         :param _hours: <int> number of hours in which Call or Duration object
-        will be outdated
-        :return: <int> number of removed objects from _list
+        will be outdated.
+        :return: <int> number of removed objects from _list.
         """
 
         removed_elements = []

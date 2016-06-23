@@ -1,7 +1,5 @@
 import re
-from datetime import datetime,timedelta
 
-from app.models import Call, Duration
 import app.utils as utils
 
 
@@ -49,10 +47,10 @@ class DailyStat(object):
         Returns value of searched attribute from obj1 or obj2 (depend on where
         search attribute will be find).
 
-        :param obj1: <object> Call or Duration
-        :param obj2: <object> Call or Duration
-        :param attribute_name: <str> name of searched attribute
-        :return: value of searched attribute
+        :param obj1: <object> Call or Duration.
+        :param obj2: <object> Call or Duration.
+        :param attribute_name: <str> name of searched attribute.
+        :return: value of searched attribute.
         """
 
         if hasattr(obj1, attribute_name):
@@ -67,12 +65,12 @@ class DailyStat(object):
 
     def _increase_number_of_calls_by_code(self, obj1, obj2, number_type):
         """
-        Increases number of calls by specific code in s
-        elf.number_of_calls_by_code dict.
+        Increases number of calls by specific code in
+        self.number_of_calls_by_code dict.
 
-        :param obj1: <object> Call or Duration
-        :param obj2: <object> Call or Duration
-        :param number_type: <str> source_number or dest_number
+        :param obj1: <object> Call or Duration.
+        :param obj2: <object> Call or Duration.
+        :param number_type: <str> source_number or dest_number.
         """
 
         number = self._get_attribute_by_name(obj1, obj2, number_type)
@@ -89,10 +87,10 @@ class DailyStat(object):
         Increases summary duration of calls by specific code in s
         elf.summary_duration_by_code dict.
 
-        :param obj1: <object> Call or Duration
-        :param obj2: <object> Call or Duration
-        :param duration: <int> duration of call (from Duration object)
-        :param number_type: <str> source_number or dest_number
+        :param obj1: <object> Call or Duration.
+        :param obj2: <object> Call or Duration.
+        :param duration: <int> duration of call (from Duration object).
+        :param number_type: <str> source_number or dest_number.
         """
 
         number = self._get_attribute_by_name(obj1, obj2, number_type)
@@ -108,8 +106,8 @@ class DailyStat(object):
         Refresh current daily stats (self.self.summary_number_of_calls,
         self.summary_calls_duration, etc) based on obj1 and obj2.
 
-        :param obj1: <object> Call or Duration
-        :param obj2: <object> Call or Duration
+        :param obj1: <object> Call or Duration.
+        :param obj2: <object> Call or Duration.
         :return:
         """
 
@@ -129,4 +127,3 @@ class DailyStat(object):
             obj1, obj2, new_duration, "source_number")
         self._increase_summary_duration_by_code(
             obj1, obj2, new_duration, "dest_number")
-
