@@ -23,27 +23,48 @@ class Loader(object):
 
     @staticmethod
     def _load_file(filename, _class):
-        with open(filename, 'rw') as f:
+        """
+        Create from concrete json file Call or Duration object depends on
+        _class.
+
+        :param filename: <str> json input filename.
+        :param _class: <type> Call or Duration class.
+        :return: <object> Call or Duration.
+        """
+
+        with open(filename, 'r') as f:
             try:
                 json_data = json.load(f)
             except ValueError:
                 # I think in production here should be some logging
                 raise ValueError("Error! Can't load json file %s!" % filename)
 
-            # !TODO check for unknown attributes
-            obj = _class(**json_data)
-
-            # Rename file for now, in production we shall delete it
-            rename(filename, "%s.ok" % filename)
+            try:
+                obj = _class(**json_data)
+            except TypeError as e:
+                raise TypeError("Error during parsing json into Call or "
+                                "Duration object: %s!" % e)
 
             if obj.errors:
                 raise ValueError(
                     "There are some errors in %s object: %s!" %
                     (_class.__name__, obj.errors))
 
-            return obj
+        # Rename file for now, in production we shall delete it
+        rename(filename, "%s.ok" % filename)
+
+        return obj
 
     def _get_files(self, path, _class):
+        """
+        Makes from json input data Call and Duration objects list and return
+        it.
+
+        :param path: <str> path to input directory for concrete type of data.
+        :param _class: <object> Call or Duration object.
+        :return: <list> of all Call and Duration objects.
+        """
+
         if not isdir(path):
             raise FileNotFoundError("Can't open directory %s!" % path)
 
@@ -58,7 +79,7 @@ class Loader(object):
         for filename in files:
             try:
                 new_obj = self._load_file(filename, _class)
-            except ValueError as e:
+            except (ValueError, PermissionError, TypeError) as e:
                 # I think in production here should be some logging
                 print(e)
                 # And we must go to next file
@@ -69,6 +90,12 @@ class Loader(object):
         return files_list
 
     def load(self):
+        """
+        Loads call and duration files from input dirs.
+
+        :returns <list> of all Call and Duration objects.
+        """
+
         all_list = []
 
         all_list.extend(self._get_files(join('input', 'call'), Call))
