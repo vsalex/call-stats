@@ -37,7 +37,7 @@ class CallTestCase(unittest.TestCase):
         # Load data from fixtures
         with open("tests/fixtures/call/call1.json", 'r') as f:
             json_data = json.load(f)
-            for k,v in json_data.items():
+            for k, v in json_data.items():
                 setattr(self, k, v)
 
     def test_init_obj_True(self):
