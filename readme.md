@@ -23,3 +23,30 @@ pip install -r requirements.txt
 cd call-stats
 python -m unittest discover tests
 ```
+
+## Запуск
+```
+cd call-stats
+python3.4 load_stats.py
+```
+
+## Описание
+Скрипт будет запущен в бесконечном цикле. Будут постоянно анализироваться директории `input/call` и `input/duration` наналичие новых файлов с данными. Как только новый файл будет найден, он поступит дальше в работу, а сам будет переименован (к имени файла будет добавлено расширение `.ok`).
+
+Чтобы из этого скрипта сделать полноценный сервис я бы использовал `upstart` например вот так:
+```
+start on filesystem
+stop on shutdown
+
+env logf="/var/log/call-stats.log"
+script
+    ~/call-stats/load_stats.conf >> $logf
+end scipt
+```
+
+## Фронтэнд
+Для отображения обработанной статистики использован Flask.
+```
+cd frontend_flask
+python3.4 frontend_flask.py
+```
