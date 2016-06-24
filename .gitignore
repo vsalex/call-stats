@@ -111,6 +111,6 @@ crashlytics-build.properties
 
 task.txt
 daily_stat.sqlite
-input_perfect/*
-input_res/*
-readme.md1
+input_perfect/
+input_res/
+readme1.md
